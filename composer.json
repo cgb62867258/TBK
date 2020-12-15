@@ -1,0 +1,21 @@
+{
+    "name": "tbkSDK/tbk",
+    "description": "淘宝客SDK",
+    "license": "",
+    "minimum-stability": "stable",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "CGB",
+            "email": "cgb@qq.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/cgb62867258/TBK"
+    },
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+    }
+}
