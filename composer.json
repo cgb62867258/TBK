@@ -1,7 +1,7 @@
 {
     "name": "tbk-sdk/tbk",
     "description": "淘宝客SDK",
-    "license": "",
+    "license": "license",
     "minimum-stability": "stable",
     "version": "1.0.0",
     "authors": [
