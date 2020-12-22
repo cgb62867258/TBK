@@ -1,34 +1,39 @@
 <?php
 /**
  * TOP API: taobao.cloudpush.notice.android request
- * 
+ *
  * @author auto create
  * @since 1.0, 2018.07.26
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class CloudpushNoticeAndroidRequest
 {
-	/** 
+	/**
 	 * 通知摘要
 	 **/
 	private $summary;
-	
-	/** 
+
+	/**
 	 * 推送目标: device:推送给设备; account:推送给指定帐号,all: 推送给全部
 	 **/
 	private $target;
-	
-	/** 
+
+	/**
 	 * 根据Target来设定，如Target=device, 则对应的值为 设备id1,设备id2. 多个值使用逗号分隔
 	 **/
 	private $targetValue;
-	
-	/** 
+
+	/**
 	 * 通知的标题.
 	 **/
 	private $title;
-	
+
 	private $apiParas = array();
-	
+
 	public function setSummary($summary)
 	{
 		$this->summary = $summary;
@@ -77,21 +82,21 @@ class CloudpushNoticeAndroidRequest
 	{
 		return "taobao.cloudpush.notice.android";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->summary,"summary");
 		RequestCheckUtil::checkNotNull($this->target,"target");
 		RequestCheckUtil::checkNotNull($this->targetValue,"targetValue");
 		RequestCheckUtil::checkNotNull($this->title,"title");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

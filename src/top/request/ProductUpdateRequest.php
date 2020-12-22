@@ -1,64 +1,69 @@
 <?php
 /**
  * TOP API: taobao.product.update request
- * 
+ *
  * @author auto create
  * @since 1.0, 2019.03.25
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class ProductUpdateRequest
 {
-	/** 
+	/**
 	 * 非关键属性.调用taobao.itemprops.get获取pid,调用taobao.itempropvalues.get获取vid;格式:pid:vid;pid:vid
 	 **/
 	private $binds;
-	
-	/** 
+
+	/**
 	 * 产品描述.最大不超过25000个字符
 	 **/
 	private $desc;
-	
-	/** 
+
+	/**
 	 * 产品主图.最大500K,目前仅支持GIF,JPG
 	 **/
 	private $image;
-	
-	/** 
+
+	/**
 	 * 是否是主图
 	 **/
 	private $major;
-	
-	/** 
+
+	/**
 	 * 产品名称.最大不超过30个字符
 	 **/
 	private $name;
-	
-	/** 
+
+	/**
 	 * 自定义非关键属性
 	 **/
 	private $nativeUnkeyprops;
-	
-	/** 
+
+	/**
 	 * 外部产品ID
 	 **/
 	private $outerId;
-	
-	/** 
+
+	/**
 	 * 产品市场价.精确到2位小数;单位为元.如:200.07
 	 **/
 	private $price;
-	
-	/** 
+
+	/**
 	 * 产品ID
 	 **/
 	private $productId;
-	
-	/** 
+
+	/**
 	 * 销售属性.调用taobao.itemprops.get获取pid,调用taobao.itempropvalues.get获取vid;格式:pid:vid;pid:vid
 	 **/
 	private $saleProps;
-	
+
 	private $apiParas = array();
-	
+
 	public function setBinds($binds)
 	{
 		$this->binds = $binds;
@@ -173,18 +178,18 @@ class ProductUpdateRequest
 	{
 		return "taobao.product.update";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->productId,"productId");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

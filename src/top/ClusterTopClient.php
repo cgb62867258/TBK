@@ -1,199 +1,222 @@
 <?php
-class ClusterTopClient extends TopClient {
 
-	private static $dnsconfig;
-	private static $syncDate = 0;
-	private static $applicationVar ;
-	private static $cfgDuration = 10;
+namespace TopClient;
 
-	public function __construct($appkey = "",$secretKey = ""){
-		ClusterTopClient::$applicationVar = new ApplicationVar;
-		$this->appkey = $appkey;
-		$this->secretKey = $secretKey ;
-		$saveConfig = ClusterTopClient::$applicationVar->getValue();
+class ClusterTopClient extends TopClient
+{
+    private static $dnsconfig;
 
-		if($saveConfig){
-			$tmpConfig = $saveConfig['dnsconfig'];
-			ClusterTopClient::$dnsconfig = $this->object_to_array($tmpConfig);
-			unset($tmpConfig);
+    private static $syncDate = 0;
 
-			ClusterTopClient::$syncDate = $saveConfig['syncDate'];
-			if(!ClusterTopClient::$syncDate)
-				ClusterTopClient::$syncDate = 0;
-		}
-	}
+    private static $applicationVar;
 
-	public function __destruct(){
-		if(ClusterTopClient::$dnsconfig && ClusterTopClient::$syncDate){
-			ClusterTopClient::$applicationVar->setValue("dnsconfig",ClusterTopClient::$dnsconfig);
-			ClusterTopClient::$applicationVar->setValue("syncDate",ClusterTopClient::$syncDate);
-			ClusterTopClient::$applicationVar->write();
-		}
-	}
+    private static $cfgDuration = 10;
 
-	public function execute($request = null, $session = null,$bestUrl = null){
-		$currentDate = date('U');
-		$syncDuration = $this->getDnsConfigSyncDuration();
-		$bestUrl = $this->getBestVipUrl($this->gatewayUrl,$request->getApiMethodName(),$session);
-		if($currentDate - ClusterTopClient::$syncDate > $syncDuration * 60){
-			$httpdns = new HttpdnsGetRequest;
-			ClusterTopClient::$dnsconfig = json_decode(parent::execute($httpdns,null,$bestUrl)->result,true);
-			$syncDate = date('U');
-			ClusterTopClient::$syncDate = $syncDate ;
-		}
-		return parent::execute($request,$session,$bestUrl);
-	}
+    public function __construct($appkey = '', $secretKey = '')
+    {
+        self::$applicationVar = new ApplicationVar();
+        $this->appkey = $appkey;
+        $this->secretKey = $secretKey;
+        $saveConfig = self::$applicationVar->getValue();
 
-	private function getDnsConfigSyncDuration(){
-		if(ClusterTopClient::$cfgDuration){
-			return ClusterTopClient::$cfgDuration;
-		}
-		if(!ClusterTopClient::$dnsconfig){
-			return ClusterTopClient::$cfgDuration;
-		}
-		$config = json_encode(ClusterTopClient::$dnsconfig);
-		if(!$config){
-			return ClusterTopClient::$cfgDuration;
-		}
-		$config = ClusterTopClient::$dnsconfig['config'];
-		$duration = $config['interval'];
-		ClusterTopClient::$cfgDuration = $duration;
+        if ($saveConfig) {
+            $tmpConfig = $saveConfig['dnsconfig'];
+            self::$dnsconfig = $this->object_to_array($tmpConfig);
+            unset($tmpConfig);
 
-		return ClusterTopClient::$cfgDuration;
-	}
+            self::$syncDate = $saveConfig['syncDate'];
+            if (!self::$syncDate) {
+                self::$syncDate = 0;
+            }
+        }
+    }
 
-	private function getBestVipUrl($url,$apiname = null,$session = null){
-		$config = ClusterTopClient::$dnsconfig['config'];
-		$degrade = $config['degrade'];
-		if(strcmp($degrade,'true') == 0){
-			return $url;
-		}		
-		$currentEnv = $this->getEnvByApiName($apiname,$session);
-		$vip = $this->getVipByEnv($url,$currentEnv);
-		if($vip)
-			return $vip;
-		return $url;
-	}
+    private function object_to_array($obj)
+    {
+        $_arr = is_object($obj) ? get_object_vars($obj) : $obj;
+        foreach ($_arr as $key => $val) {
+            $val = (is_array($val) || is_object($val)) ? $this->object_to_array($val) : $val;
+            $arr[$key] = $val;
+        }
 
-	private function getVipByEnv($comUrl,$currentEnv){
-		$urlSchema = parse_url($comUrl);
-		if(!$urlSchema)
-			return null;
-		if(!ClusterTopClient::$dnsconfig['env'])
-			return null;
-		
-		if(!array_key_exists($currentEnv,ClusterTopClient::$dnsconfig['env']))
-			return null;
+        return $arr;
+    }
 
-		$hostList = ClusterTopClient::$dnsconfig['env'][$currentEnv];
-		if(!$hostList)
-			return null ;
+    private static function startsWith($haystack, $needle)
+    {
+        return $needle === '' || strpos($haystack, $needle) === 0;
+    }
 
-		$vipList = null;
-		foreach ($hostList as $key => $value) {
-			if(strcmp($key,$urlSchema['host']) == 0 && strcmp($value['proto'],$urlSchema['scheme']) == 0){
-				$vipList = $value;
-				break;
-			}
-		}
-		$vip = $this->getRandomWeightElement($vipList['vip']);
-		
-		if($vip){
-			return $urlSchema['scheme']."://".$vip.$urlSchema['path'];
-		}
-		return null;
-	}
+    public function __destruct()
+    {
+        if (self::$dnsconfig && self::$syncDate) {
+            self::$applicationVar->setValue('dnsconfig', self::$dnsconfig);
+            self::$applicationVar->setValue('syncDate', self::$syncDate);
+            self::$applicationVar->write();
+        }
+    }
 
-	private function getEnvByApiName($apiName,$session=""){
-		$apiCfgArray = ClusterTopClient::$dnsconfig['api'];
-		if($apiCfgArray){	
-			if(array_key_exists($apiName,$apiCfgArray)){
-				$apiCfg = $apiCfgArray[$apiName];
-				if(array_key_exists('user',$apiCfg)){
-					$userFlag = $apiCfg['user'];
-					$flag = $this->getUserFlag($session);
-					if($userFlag && $flag ){
-						return $this->getEnvBySessionFlag($userFlag,$flag);
-					}else{
-						return $this->getRandomWeightElement($apiCfg['rule']);
-					}
-				}
-			}
-		}
-		return $this->getDeafultEnv();
-	}
+    public function execute($request = null, $session = null, $bestUrl = null)
+    {
+        $currentDate = date('U');
+        $syncDuration = $this->getDnsConfigSyncDuration();
+        $bestUrl = $this->getBestVipUrl($this->gatewayUrl, $request->getApiMethodName());
+        if ($currentDate - self::$syncDate > $syncDuration * 60) {
+            $httpdns = new HttpdnsGetRequest();
+            self::$dnsconfig = json_decode(parent::execute($httpdns, null, $bestUrl)->result);
+            $syncDate = date('U');
+            self::$syncDate = $syncDate;
+        }
 
-	private function getUserFlag($session){
-		if($session && strlen($session) > 5){
-			if($session[0] == '6' || $session[0] == '7'){
-				return $session[strlen($session) -1];
-			}else if($session[0] == '5' || $session[0] == '8'){
-				return $session[5];
-			}
-		}
-		return null;
-	}
+        return parent::execute($request, $session, $bestUrl);
+    }
 
-	private function getEnvBySessionFlag($targetConfig,$flag){
-		if($flag){
-			$userConf = ClusterTopClient::$dnsconfig['user'];
-			$cfgArry = $userConf[$targetConfig];
-			foreach ($cfgArry as $key => $value) {
-				if(in_array($flag,$value))
-					return $key;
-			}
-		}else{
-			return null;
-		}
-	}
+    private function getDnsConfigSyncDuration()
+    {
+        if (self::$cfgDuration) {
+            return self::$cfgDuration;
+        }
+        if (!self::$dnsconfig) {
+            return self::$cfgDuration;
+        }
+        $config = json_encode(self::$dnsconfig);
+        if (!$config) {
+            return self::$cfgDuration;
+        }
+        $config = self::$dnsconfig['config'];
+        $duration = $config['interval'];
+        self::$cfgDuration = $duration;
 
-	private function getRandomWeightElement($elements){
-		$totalWeight = 0;
-		if($elements){
-			foreach ($elements as $ele) {
-				$weight = $this->getElementWeight($ele);
-				$r = $this->randomFloat() * ($weight + $totalWeight);
-				if($r >= $totalWeight){
-					$selected = $ele;
-				}
-				$totalWeight += $weight;
-			}
-			if($selected){
-				return $this->getElementValue($selected);
-			}
-		}
-		return null;
+        return self::$cfgDuration;
+    }
 
-	}
+    private function getBestVipUrl($url, $apiname = null, $session = null)
+    {
+        $currentEnv = $this->getEnvByApiName($apiname, $session);
+        $vip = $this->getVipByEnv($url, $currentEnv);
+        if ($vip) {
+            return $vip;
+        }
 
-	private function getElementWeight($ele){
-		$params = explode('|', $ele);
-		return floatval($params[1]);
-	}
-	private function getElementValue($ele){
-		$params = explode('|', $ele);
-		return $params[0];		
-	}
+        return $url;
+    }
 
-	private function getDeafultEnv(){
-		return ClusterTopClient::$dnsconfig['config']['def_env'];
-	}
+    private function getEnvByApiName($apiName, $session = '')
+    {
+        $apiCfgArray = self::$dnsconfig['api'];
+        if ($apiCfgArray) {
+            $apiCfg = $apiCfgArray[$apiName];
+            if ($apiCfg) {
+                $userFlag = $apiCfg['user'];
+                $flag = $this->getUserFlag($session);
+                if ($userFlag && $this->getUserFlag($session)) {
+                    return $this->getEnvBySessionFlag($userFlag, $flag);
+                } else {
+                    return $this->getRandomWeightElement($apiCfg['rule']);
+                }
+            }
+        }
 
-	private static function startsWith($haystack, $needle) {
-    	return $needle === "" || strpos($haystack, $needle) === 0;
-	}
+        return $this->getDeafultEnv();
+    }
 
-	private function object_to_array($obj) 
-	{ 
-    	$_arr= is_object($obj) ? get_object_vars($obj) : $obj; 
-    	foreach($_arr as $key=> $val) 
-    	{ 
-        	$val= (is_array($val) || is_object($val))? $this->object_to_array($val) : $val; 
-        	$arr[$key] = $val; 
-    	} 
-    	return$arr; 
-	}
+    private function getUserFlag($session)
+    {
+        if ($session && strlen($session) > 5) {
+            if ($session[0] == '6' || $session[0] == '7') {
+                return $session[strlen($session) - 1];
+            } else {
+                if ($session[0] == '5' || $session[0] == '8') {
+                    return $session[5];
+                }
+            }
+        }
 
-	private function randomFloat($min = 0, $max = 1) { return $min + mt_rand() / mt_getrandmax() * ($max - $min); }
+        return;
+    }
+
+    private function getEnvBySessionFlag($targetConfig, $flag)
+    {
+        if ($flag) {
+            return;
+        }
+        $userArry = $this->dnsconfig['user'];
+        $cfgArry = $userConf[$targetConfig];
+        var_dump($cfgArry);
+    }
+
+    private function getRandomWeightElement($elements)
+    {
+        $totalWeight = 0;
+        if ($elements) {
+            foreach ($elements as $ele) {
+                $weight = $this->getElementWeight($ele);
+                $r = $this->randomFloat() * ($weight + $totalWeight);
+                if ($r >= $totalWeight) {
+                    $selected = $ele;
+                }
+                $totalWeight += $weight;
+            }
+            if ($selected) {
+                return $this->getElementValue($selected);
+            }
+        }
+
+        return;
+    }
+
+    private function getElementWeight($ele)
+    {
+        $params = explode('|', $ele);
+
+        return floatval($params[1]);
+    }
+
+    private function randomFloat($min = 0, $max = 1)
+    {
+        return $min + mt_rand() / mt_getrandmax() * ($max - $min);
+    }
+
+    private function getElementValue($ele)
+    {
+        $params = explode('|', $ele);
+
+        return $params[0];
+    }
+
+    private function getDeafultEnv()
+    {
+        return self::$dnsconfig['config']['def_env'];
+    }
+
+    private function getVipByEnv($comUrl, $currentEnv)
+    {
+        $urlSchema = parse_url($comUrl);
+        if (!$urlSchema) {
+            return;
+        }
+        if (!array_key_exists($currentEnv, self::$dnsconfig['env'])) {
+            return;
+        }
+
+        $hostList = self::$dnsconfig['env'][$currentEnv];
+        if (!$hostList) {
+            return;
+        }
+
+        $vipList = null;
+        foreach ($hostList as $key => $value) {
+            if (strcmp($key, $urlSchema['host']) == 0 && strcmp($value['proto'], $urlSchema['scheme']) == 0) {
+                $vipList = $value;
+                break;
+            }
+        }
+        $vip = $this->getRandomWeightElement($vipList['vip']);
+
+        if ($vip) {
+            return $urlSchema['scheme'].'://'.$vip.$urlSchema['path'];
+        }
+
+        return;
+    }
 }
-?>

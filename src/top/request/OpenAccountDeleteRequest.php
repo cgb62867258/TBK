@@ -1,24 +1,29 @@
 <?php
 /**
  * TOP API: taobao.open.account.delete request
- * 
+ *
  * @author auto create
  * @since 1.0, 2018.07.26
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class OpenAccountDeleteRequest
 {
-	/** 
+	/**
 	 * ISV自己账号的id列表
 	 **/
 	private $isvAccountIds;
-	
-	/** 
+
+	/**
 	 * Open Account的id列表
 	 **/
 	private $openAccountIds;
-	
+
 	private $apiParas = array();
-	
+
 	public function setIsvAccountIds($isvAccountIds)
 	{
 		$this->isvAccountIds = $isvAccountIds;
@@ -45,19 +50,19 @@ class OpenAccountDeleteRequest
 	{
 		return "taobao.open.account.delete";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkMaxListSize($this->isvAccountIds,20,"isvAccountIds");
 		RequestCheckUtil::checkMaxListSize($this->openAccountIds,20,"openAccountIds");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

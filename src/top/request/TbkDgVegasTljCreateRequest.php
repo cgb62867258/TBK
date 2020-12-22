@@ -1,84 +1,89 @@
 <?php
 /**
  * TOP API: taobao.tbk.dg.vegas.tlj.create request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.08.18
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TbkDgVegasTljCreateRequest
 {
-	/** 
+	/**
 	 * 妈妈广告位Id
 	 **/
 	private $adzoneId;
-	
-	/** 
+
+	/**
 	 * CPS佣金计划类型
 	 **/
 	private $campaignType;
-	
-	/** 
+
+	/**
 	 * 宝贝id
 	 **/
 	private $itemId;
-	
-	/** 
+
+	/**
 	 * 淘礼金名称，最大10个字符
 	 **/
 	private $name;
-	
-	/** 
+
+	/**
 	 * 单个淘礼金面额，支持两位小数，单位元
 	 **/
 	private $perFace;
-	
-	/** 
+
+	/**
 	 * 安全等级，0：适用于常规淘礼金投放场景；1：更高安全级别，适用于淘礼金面额偏大等安全性较高的淘礼金投放场景，可能导致更多用户拦截。security_switch为true，此字段不填写时，使用0作为默认安全级别。如果security_switch为false，不进行安全判断。
 	 **/
 	private $securityLevel;
-	
-	/** 
+
+	/**
 	 * 安全开关，若不进行安全校验，可能放大您的资损风险，请谨慎选择
 	 **/
 	private $securitySwitch;
-	
-	/** 
+
+	/**
 	 * 发放截止时间
 	 **/
 	private $sendEndTime;
-	
-	/** 
+
+	/**
 	 * 发放开始时间
 	 **/
 	private $sendStartTime;
-	
-	/** 
+
+	/**
 	 * 淘礼金总个数
 	 **/
 	private $totalNum;
-	
-	/** 
+
+	/**
 	 * 使用结束日期。如果是结束时间模式为相对时间，时间格式为1-7直接的整数, 例如，1（相对领取时间1天）； 如果是绝对时间，格式为yyyy-MM-dd，例如，2019-01-29，表示到2019-01-29 23:59:59结束
 	 **/
 	private $useEndTime;
-	
-	/** 
+
+	/**
 	 * 结束日期的模式,1:相对时间，2:绝对时间
 	 **/
 	private $useEndTimeMode;
-	
-	/** 
+
+	/**
 	 * 使用开始日期。相对时间，无需填写，以用户领取时间作为使用开始时间。绝对时间，格式 yyyy-MM-dd，例如，2019-01-29，表示从2019-01-29 00:00:00 开始
 	 **/
 	private $useStartTime;
-	
-	/** 
+
+	/**
 	 * 单用户累计中奖次数上限
 	 **/
 	private $userTotalWinNumLimit;
-	
+
 	private $apiParas = array();
-	
+
 	public function setAdzoneId($adzoneId)
 	{
 		$this->adzoneId = $adzoneId;
@@ -237,15 +242,15 @@ class TbkDgVegasTljCreateRequest
 	{
 		return "taobao.tbk.dg.vegas.tlj.create";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->adzoneId,"adzoneId");
 		RequestCheckUtil::checkNotNull($this->itemId,"itemId");
 		RequestCheckUtil::checkNotNull($this->name,"name");
@@ -255,7 +260,7 @@ class TbkDgVegasTljCreateRequest
 		RequestCheckUtil::checkNotNull($this->totalNum,"totalNum");
 		RequestCheckUtil::checkNotNull($this->userTotalWinNumLimit,"userTotalWinNumLimit");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

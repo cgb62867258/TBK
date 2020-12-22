@@ -1,49 +1,54 @@
 <?php
 /**
  * TOP API: taobao.tbk.sc.publisher.info.get request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.10.30
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TbkScPublisherInfoGetRequest
 {
-	/** 
+	/**
 	 * 淘宝客外部用户标记，如自身系统账户ID；微信ID等
 	 **/
 	private $externalId;
-	
-	/** 
+
+	/**
 	 * 类型，必选 1:渠道信息；2:会员信息
 	 **/
 	private $infoType;
-	
-	/** 
+
+	/**
 	 * 第几页
 	 **/
 	private $pageNo;
-	
-	/** 
+
+	/**
 	 * 每页大小
 	 **/
 	private $pageSize;
-	
-	/** 
+
+	/**
 	 * 备案的场景：common（通用备案），etao（一淘备案），minietao（一淘小程序备案），offlineShop（线下门店备案），offlinePerson（线下个人备案）。如不填默认common。查询会员信息只需填写common即可
 	 **/
 	private $relationApp;
-	
-	/** 
+
+	/**
 	 * 渠道独占 - 渠道关系ID
 	 **/
 	private $relationId;
-	
-	/** 
+
+	/**
 	 * 会员独占 - 会员运营ID
 	 **/
 	private $specialId;
-	
+
 	private $apiParas = array();
-	
+
 	public function setExternalId($externalId)
 	{
 		$this->externalId = $externalId;
@@ -125,19 +130,19 @@ class TbkScPublisherInfoGetRequest
 	{
 		return "taobao.tbk.sc.publisher.info.get";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->infoType,"infoType");
 		RequestCheckUtil::checkNotNull($this->relationApp,"relationApp");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

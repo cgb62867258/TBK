@@ -1,39 +1,44 @@
 <?php
 /**
  * TOP API: taobao.tbk.tpwd.create request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.10.08
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TbkTpwdCreateRequest
 {
-	/** 
+	/**
 	 * [已废弃]扩展字段JSON格式
 	 **/
 	private $ext;
-	
-	/** 
+
+	/**
 	 * 口令弹框logoURL
 	 **/
 	private $logo;
-	
-	/** 
+
+	/**
 	 * 口令弹框内容
 	 **/
 	private $text;
-	
-	/** 
+
+	/**
 	 * 口令跳转目标页
 	 **/
 	private $url;
-	
-	/** 
+
+	/**
 	 * 生成口令的淘宝用户ID
 	 **/
 	private $userId;
-	
+
 	private $apiParas = array();
-	
+
 	public function setExt($ext)
 	{
 		$this->ext = $ext;
@@ -93,19 +98,19 @@ class TbkTpwdCreateRequest
 	{
 		return "taobao.tbk.tpwd.create";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->text,"text");
 		RequestCheckUtil::checkNotNull($this->url,"url");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

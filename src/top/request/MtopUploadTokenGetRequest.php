@@ -1,19 +1,22 @@
 <?php
 /**
  * TOP API: taobao.mtop.upload.token.get request
- * 
+ *
  * @author auto create
  * @since 1.0, 2018.08.21
  */
+
+namespace TopClient\request;
+
 class MtopUploadTokenGetRequest
 {
-	/** 
+	/**
 	 * 系统自动生成
 	 **/
 	private $paramUploadTokenRequest;
-	
+
 	private $apiParas = array();
-	
+
 	public function setParamUploadTokenRequest($paramUploadTokenRequest)
 	{
 		$this->paramUploadTokenRequest = $paramUploadTokenRequest;
@@ -29,17 +32,17 @@ class MtopUploadTokenGetRequest
 	{
 		return "taobao.mtop.upload.token.get";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

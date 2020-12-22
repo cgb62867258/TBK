@@ -1,39 +1,44 @@
 <?php
 /**
  * TOP API: taobao.tbk.activity.info.get request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.10.19
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TbkActivityInfoGetRequest
 {
-	/** 
+	/**
 	 * 官方活动会场ID，从淘宝客后台“我要推广-活动推广”中获取
 	 **/
 	private $activityMaterialId;
-	
-	/** 
+
+	/**
 	 * mm_xxx_xxx_xxx的第三位
 	 **/
 	private $adzoneId;
-	
-	/** 
+
+	/**
 	 * 渠道关系id
 	 **/
 	private $relationId;
-	
-	/** 
+
+	/**
 	 * mm_xxx_xxx_xxx 仅三方分成场景使用
 	 **/
 	private $subPid;
-	
-	/** 
+
+	/**
 	 * 自定义输入串，英文和数字组成，长度不能大于12个字符，区分不同的推广渠道
 	 **/
 	private $unionId;
-	
+
 	private $apiParas = array();
-	
+
 	public function setActivityMaterialId($activityMaterialId)
 	{
 		$this->activityMaterialId = $activityMaterialId;
@@ -93,19 +98,19 @@ class TbkActivityInfoGetRequest
 	{
 		return "taobao.tbk.activity.info.get";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->activityMaterialId,"activityMaterialId");
 		RequestCheckUtil::checkNotNull($this->adzoneId,"adzoneId");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

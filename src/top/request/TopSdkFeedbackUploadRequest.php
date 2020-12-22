@@ -1,24 +1,29 @@
 <?php
 /**
  * TOP API: taobao.top.sdk.feedback.upload request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.08.19
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TopSdkFeedbackUploadRequest
 {
-	/** 
+	/**
 	 * 具体内容，json形式
 	 **/
 	private $content;
-	
-	/** 
+
+	/**
 	 * 1、回传加密信息
 	 **/
 	private $type;
-	
+
 	private $apiParas = array();
-	
+
 	public function setContent($content)
 	{
 		$this->content = $content;
@@ -45,18 +50,18 @@ class TopSdkFeedbackUploadRequest
 	{
 		return "taobao.top.sdk.feedback.upload";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->type,"type");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

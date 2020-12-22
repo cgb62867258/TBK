@@ -1,29 +1,32 @@
 <?php
 /**
  * TOP API: taobao.tbk.coupon.get request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.10.08
  */
+
+namespace TopClient\request;
+
 class TbkCouponGetRequest
 {
-	/** 
+	/**
 	 * 券ID
 	 **/
 	private $activityId;
-	
-	/** 
+
+	/**
 	 * 商品ID
 	 **/
 	private $itemId;
-	
-	/** 
+
+	/**
 	 * 带券ID与商品ID的加密串
 	 **/
 	private $me;
-	
+
 	private $apiParas = array();
-	
+
 	public function setActivityId($activityId)
 	{
 		$this->activityId = $activityId;
@@ -61,17 +64,17 @@ class TbkCouponGetRequest
 	{
 		return "taobao.tbk.coupon.get";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

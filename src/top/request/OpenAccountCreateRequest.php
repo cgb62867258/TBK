@@ -1,19 +1,22 @@
 <?php
 /**
  * TOP API: taobao.open.account.create request
- * 
+ *
  * @author auto create
  * @since 1.0, 2018.07.26
  */
+
+namespace TopClient\request;
+
 class OpenAccountCreateRequest
 {
-	/** 
+	/**
 	 * Open Account的列表
 	 **/
 	private $paramList;
-	
+
 	private $apiParas = array();
-	
+
 	public function setParamList($paramList)
 	{
 		$this->paramList = $paramList;
@@ -29,17 +32,17 @@ class OpenAccountCreateRequest
 	{
 		return "taobao.open.account.create";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

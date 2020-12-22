@@ -1,44 +1,47 @@
 <?php
 /**
  * TOP API: taobao.open.account.token.apply request
- * 
+ *
  * @author auto create
  * @since 1.0, 2018.07.26
  */
+
+namespace TopClient\request;
+
 class OpenAccountTokenApplyRequest
 {
-	/** 
+	/**
 	 * 用于透传一些业务附加参数
 	 **/
 	private $ext;
-	
-	/** 
+
+	/**
 	 * isv自己账号的唯一id
 	 **/
 	private $isvAccountId;
-	
-	/** 
+
+	/**
 	 * ISV APP的登录态时长单位是秒
 	 **/
 	private $loginStateExpireIn;
-	
-	/** 
+
+	/**
 	 * open account id
 	 **/
 	private $openAccountId;
-	
-	/** 
+
+	/**
 	 * 时间戳单位是毫秒
 	 **/
 	private $tokenTimestamp;
-	
-	/** 
+
+	/**
 	 * 用于防重放的唯一id
 	 **/
 	private $uuid;
-	
+
 	private $apiParas = array();
-	
+
 	public function setExt($ext)
 	{
 		$this->ext = $ext;
@@ -109,17 +112,17 @@ class OpenAccountTokenApplyRequest
 	{
 		return "taobao.open.account.token.apply";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

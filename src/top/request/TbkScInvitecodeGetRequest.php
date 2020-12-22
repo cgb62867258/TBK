@@ -1,29 +1,34 @@
 <?php
 /**
  * TOP API: taobao.tbk.sc.invitecode.get request
- * 
+ *
  * @author auto create
  * @since 1.0, 2020.10.30
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TbkScInvitecodeGetRequest
 {
-	/** 
+	/**
 	 * 邀请码类型，1 - 渠道邀请，2 - 渠道裂变，3 -会员邀请
 	 **/
 	private $codeType;
-	
-	/** 
+
+	/**
 	 * 渠道推广的物料类型
 	 **/
 	private $relationApp;
-	
-	/** 
+
+	/**
 	 * 渠道关系ID
 	 **/
 	private $relationId;
-	
+
 	private $apiParas = array();
-	
+
 	public function setCodeType($codeType)
 	{
 		$this->codeType = $codeType;
@@ -61,19 +66,19 @@ class TbkScInvitecodeGetRequest
 	{
 		return "taobao.tbk.sc.invitecode.get";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->codeType,"codeType");
 		RequestCheckUtil::checkNotNull($this->relationApp,"relationApp");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

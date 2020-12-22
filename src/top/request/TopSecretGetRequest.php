@@ -1,29 +1,34 @@
 <?php
 /**
  * TOP API: taobao.top.secret.get request
- * 
+ *
  * @author auto create
  * @since 1.0, 2019.11.07
  */
+
+namespace TopClient\request;
+
+use TopClient\RequestCheckUtil;
+
 class TopSecretGetRequest
 {
-	/** 
+	/**
 	 * 自定义用户id
 	 **/
 	private $customerUserId;
-	
-	/** 
+
+	/**
 	 * 伪随机数
 	 **/
 	private $randomNum;
-	
-	/** 
+
+	/**
 	 * 秘钥版本号
 	 **/
 	private $secretVersion;
-	
+
 	private $apiParas = array();
-	
+
 	public function setCustomerUserId($customerUserId)
 	{
 		$this->customerUserId = $customerUserId;
@@ -61,18 +66,18 @@ class TopSecretGetRequest
 	{
 		return "taobao.top.secret.get";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 		RequestCheckUtil::checkNotNull($this->randomNum,"randomNum");
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;

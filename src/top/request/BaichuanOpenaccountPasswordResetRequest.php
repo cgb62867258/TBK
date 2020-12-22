@@ -1,19 +1,22 @@
 <?php
 /**
  * TOP API: taobao.baichuan.openaccount.password.reset request
- * 
+ *
  * @author auto create
  * @since 1.0, 2018.07.26
  */
+
+namespace TopClient\request;
+
 class BaichuanOpenaccountPasswordResetRequest
 {
-	/** 
+	/**
 	 * name
 	 **/
 	private $name;
-	
+
 	private $apiParas = array();
-	
+
 	public function setName($name)
 	{
 		$this->name = $name;
@@ -29,17 +32,17 @@ class BaichuanOpenaccountPasswordResetRequest
 	{
 		return "taobao.baichuan.openaccount.password.reset";
 	}
-	
+
 	public function getApiParas()
 	{
 		return $this->apiParas;
 	}
-	
+
 	public function check()
 	{
-		
+
 	}
-	
+
 	public function putOtherTextParam($key, $value) {
 		$this->apiParas[$key] = $value;
 		$this->$key = $value;
